@@ -5,6 +5,6 @@ main:
   - title: "About"
     url: /about/
   - title: "test"
-    url: /category/test
+    url: /categories/algorithms
   - title: "Sitemap"
-    url: /sitemap.xml
+    url: /sitemap/
