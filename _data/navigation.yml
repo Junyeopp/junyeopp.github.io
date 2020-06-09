@@ -2,11 +2,11 @@
 main:
   - title: "Home"
     url: https://junyeopp.github.io
-  # - title: "About"
-  #   url: https://mmistakes.github.io/about
-  # - title: "Sample Posts"
-  #   url: /year-archive/
-  # - title: "Sample Collections"
-  #   url: /collection-archive/
-  # - title: "Sitemap"
-  #   url: /sitemap/
+  - title: "About"
+    url: https://junyeop.github.io/about
+   - title: "Sample Posts"
+     url: /year-archive/
+   - title: "Sample Collections"
+     url: /collection-archive/
+   - title: "Sitemap"
+     url: /sitemap/
