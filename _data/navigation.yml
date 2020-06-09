@@ -4,7 +4,7 @@ main:
     url: https://junyeopp.github.io
   - title: "About"
     url: /about/
-  - title: "Posts"
-    url: /posts/
+  - title: "test"
+    url: /category/test
   - title: "Sitemap"
     url: /sitemap.xml/
