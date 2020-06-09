@@ -97,11 +97,11 @@ author:
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "**amazing**"
   location         : "Korea"
-  email            :
+  email            : "idusjyl@gmail.com"
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
-       url: "mailto:idusjyl@gmail.com"
+      # url: "mailto:idusjyl@gmail.com"
     - label: "Website"
       icon: "fas fa-fw fa-link"
       # url: "https://your-website.com"
