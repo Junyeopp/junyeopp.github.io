@@ -5,6 +5,6 @@ main:
   - title: "About"
     url: /about/
   - title: "Algorithms"
-    url: /categories/algorithms
+    url: /categories/#algorithms
   - title: "Sitemap"
     url: /sitemap/
