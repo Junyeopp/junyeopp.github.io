@@ -7,4 +7,4 @@ main:
   - title: "test"
     url: /category/test
   - title: "Sitemap"
-    url: /sitemap.xml/
+    url: /sitemap.xml
