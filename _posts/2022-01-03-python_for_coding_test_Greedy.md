@@ -85,10 +85,12 @@ input = sys.stdin.readline
 
 nums = list(map(int, str(input().strip())))
 
-out = 1
-for num in nums:
-    if num != 0:
-        out *= num
+out = nums[0]
+for i in range(1, len(nums)):
+    if nums[i] <= 1 or out <= 1:
+        out += nums[i]
+    else:
+        out *= nums[i]
 print(out)
 ```
 
@@ -133,9 +135,28 @@ def get_impossible_min():
 
 print(get_impossible_min())
 ```
+이걸 더 간단히하면 이렇게 된다.
+```python
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+nums = sorted(list(map(int, input().split())))
+
+def get_impossible_min():
+    possible_min = 0
+    for num in nums:
+        if possible_min + 1 < num:
+            return possible_min + 1
+        else:
+            possible_min += num
+    return possible_min + 1
+
+print(get_impossible_min())
+```
 
 # 볼링공 고르기
-`itertools`를 사용해서 풀면 더 빠르게 가능할 것 같았는데, 사용법을 몰라서 그냥 풀었다.
+전체 경우의 수에서 두 사람이 같은 무게를 고르는 경우의 수들을 빼주었다.
 ```python
 # time: 13mins
 import sys
@@ -180,4 +201,34 @@ def solution(food_times, k):
         return -1
     else:
         return remained_food[k % len(remained_food)]
+```
+
+책에서 해설로 제시된 `heapq`를 이용한 풀이는 다음과 같다.
+메모리와 실행시간 모두 위의 풀이가 더 좋았으며, heapq에서 작은 값은 계속 작은 위치를 유지함으로 굳이 heapq를 사용할 필요는 없는 것 같다.
+```python
+import heapq
+
+def solution(food_times, k):
+    if sum(food_times) <= k:
+        return -1
+    
+    hq = []
+    for food_time in enumerate(food_times):
+        heapq.heappush(hq, (food_time, i + 1))
+    
+    sum_values = 0  # 먹기 위해 사용한 시간
+    previous = 0  # 직전에 다 먹은 음식 시간
+    length = len(food_times)  # 남은 음식 개수
+    
+    # sum_value + (현재의 음식 시간 - 이전 음식 시간) * 현재 음식 개수와 k 비교
+    # 
+    while sum_value + ((hq[0][0] - previous) * length) <= k:
+        now = heapq.heappop(hq)[0]
+        sum_value += (now - previous) * length
+        length -= 1  # 다 먹은 음식 제외
+        previous = now  # 이전 음식 시간 재설정
+        
+    # 남은 음식 중에서 몇 번쨰 음식인지 확인하여 출력
+    result = sorted(hq, key=lambda x: x[1])
+    return result[(k - sum_value) % length][1]
 ```
