@@ -10,7 +10,6 @@ tag: [Algorithm]
 # Greedy
 현재 상황에서 가장 좋아 보이는 것만을 선택하는 알고리즘
 
-# 문제풀이
 ## 큰 수의 법칙
 ```python
 # time: 7mins
@@ -56,7 +55,7 @@ while n != 1:
 print(count)
 ```
 
-# 모험가 길드
+## 모험가 길드
 ```python
 # time: 8mins
 import sys
@@ -77,7 +76,7 @@ for adv in advs:
 print(count)
 ```
 
-# 곱하기 혹은 더하기
+## 곱하기 혹은 더하기
 ```python
 # time: 6mins
 import sys
@@ -94,7 +93,7 @@ for i in range(1, len(nums)):
 print(out)
 ```
 
-# 문자열 뒤집기
+## 문자열 뒤집기
 ```python
 # time: 8mins
 import sys
@@ -111,7 +110,7 @@ else:
     print(count // 2 + 1)
 ```
 
-# 만들 수 없는 금액
+## 만들 수 없는 금액
 조금 어려웠다.. 다시 풀어보기!
 ```python
 # time: 25mins
@@ -155,7 +154,7 @@ def get_impossible_min():
 print(get_impossible_min())
 ```
 
-# 볼링공 고르기
+## 볼링공 고르기
 전체 경우의 수에서 두 사람이 같은 무게를 고르는 경우의 수들을 빼주었다.
 ```python
 # time: 13mins
@@ -177,7 +176,7 @@ for c in counts:
 print(out)
 ```
 
-# 무지의 먹방 라이브
+## 무지의 먹방 라이브
 시간이 많이 걸렸다.
 ```python
 # time: > 60mins
