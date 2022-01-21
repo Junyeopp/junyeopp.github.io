@@ -1,6 +1,6 @@
 ---
 title: 이것이 취업을 위한 코딩 테스트다 with 파이썬 - 구현
-data: 2022-01-03 01:00:00 +09:00
+data: 2022-01-19 22:00:00 +09:00
 categories: [Coding Test]
 tag: [Algorithm]
 ---
