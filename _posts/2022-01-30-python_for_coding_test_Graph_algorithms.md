@@ -1,0 +1,82 @@
+---
+title: 이것이 취업을 위한 코딩 테스트다 with 파이썬 - 그래프 알고리즘
+data: 2022-01-30 01:00:00 +09:00
+categories: [Coding Test]
+tag: [Algorithm]
+---
+
+- [이것이 취업을 위한 코딩 테스트다 with 파이썬](https://www.aladin.co.kr/shop/wproduct.aspx?ItemId=247882118)을 읽고 필요한 부분을 요약 정리하였습니다.
+
+# Graph Algorithms
+
+- Union-Find
+
+    경로 압축을 통해 시간 복잡도를 개선할 수 있다.
+
+    ```python
+    def find_parent(parent, x):
+    if parent[x] != x:
+        parent[x] = find_parent(parent, parent[x])
+    return parent[x]
+
+
+    def union_parent(parent, a, b):
+        a = find_parent(parent, a)
+        b = find_parent(parent, b)
+        if a < b:
+            parent[b] = a
+        else:
+            parent[a] = b
+    ```
+
+    무방향 그래프내에서의 사이클을 판별할 때 사용할 수 있다.
+    (방향 그래프에서의 사이클 여부는 DFS를 이용해서 판별할 수 있다.)
+
+- 신장 트리, Spanning Tree
+
+    신장 트리란 하나의 그래프가 있을 때 모든 노드를 포함하면서 사이클이 존재하지 않는 부분 그래프를 의미한다.
+
+    - Kruskal Algorithm
+
+        **최소 신장 트리 알고리즘**(신장 트리 중에서 최소 비용으로 만들 수 있는 신장 트리를 찾는 알고리즘)
+
+        그리디 알고리즘으로 분류됨.
+
+        1. 간선 데이터를 비용에 따라 오름차순으로 정렬
+        2. 모든 간선에 대해 간선이 사이클을 발생시키지 않는다면 최소 신장 트리에 포함시킴
+
+        정렬에 가장 시간이 오래 걸리기 때문에 E개의 간선이 있을 떄, 시간복잡도는 O(E log E)이다.
+
+- Topology Algorithm
+
+    방향 그래프의 모든 노드를 방향성에 거스르지 않도록 순서대로 나열하는 것
+
+    예시: 선수과목을 고려한 학습 순서 결정
+
+    1. 진입차수(indegree, 특정 노드로 들어오는 간선의 개수)가 0인 노드를 큐에 넣음
+    2. 큐가 빌 때까지, 큐에서 원소를 꺼내 해당 노드에서 출발하는 간선을 그래프에서 제거 & 진입차수가 0이 된 노드를 큐에 넣음
+
+    ```python
+    from collections import deque
+
+    indegree = 진입차수들
+
+    def topology_sort():
+        result = []
+        q = deque()
+
+        for i in range(1, v + 1):
+            if indegree[i] == 0:
+                q.append(i)
+
+        while q:
+            now = q.popleft()
+            result.append(now)
+
+            for i in graph[now]:
+                indegree[i] -= 1
+                if indegree[i] == 0:
+                    q.append(i)
+
+        return result
+    ```

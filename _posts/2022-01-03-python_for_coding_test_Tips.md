@@ -22,3 +22,17 @@ Jupyter나 VSCode를 이용해서 코테 문제를 풀었었는데, 이 책에�
 
 # 컴퓨터공학 지식
 - [Technical Interview Guidelines for Beginners](https://github.com/JaeYeopHan/Interview_Question_for_Beginner)
+
+# Python tips
+
+- 소수점 값을 비교하는 작업이 필요하면 ```round()``` 함수를 이용하는게 좋습니다. (컴퓨터가 실수를 정확하게 표현하지 못하기 때문에)
+- 리스트 관련 매서드의 시간복잡도
+    - append(): O(1)
+    - sort(): O(N log N)
+    - reverse(): O(N)
+    - insert(): O(N)
+    - count(): O(N)
+    - remove(): O(N)
+- 집합 관련 매서드의 시간복잡도
+    - add(): O(1)
+    - remove(): O(1)
