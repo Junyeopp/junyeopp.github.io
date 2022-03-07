@@ -138,3 +138,18 @@ net:
 - `security.SSLServerCertificateExpirationDate`
 
     : 인증서의 만기일을 확인할 수 있습니다.
+
+
+## 인증서 생성(manual)
+
+1. [dns plugin](https://eff-certbot.readthedocs.io/en/stable/using.html?highlight=route53#dns-plugins)을 제공하지 않는 곳에서는 `--manual`옵션으로 인증서를 생성해야 합니다.
+    - `certbot certonly --manual --preferred-challenges dns --cert-name CERT-NAME -d DOMAINS`
+2. 요청된 값을 TXT record에 추가하면 됩니다.
+
+    ![manual1]({{ site.baseurl }}/assets/images/2021-10-12-mongodb_and_certbot_create_pem_manual1.png)
+
+3. 정상적으로 등록이 되었다면 아래와 같은 메시지를 확인할 수 있습니다.
+
+    ![manual2]({{ site.baseurl }}/assets/images/2021-10-12-mongodb_and_certbot_create_pem_manual2.png)
+
+4. 메시지 내용처럼 `--manual`로 생성한 인증서는 자동으로 renew되지 않습니다.
