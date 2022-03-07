@@ -343,44 +343,42 @@ try_candidates()
 
 
 ## [인구 이동](https://www.acmicpc.net/problem/16234)
-틀렸는데, 반례를 못찾겠다.
+
 ```python
 import sys
-input = sys.stdin.readline
-
 from collections import deque
+input = sys.stdin.readline
 
 n, l, r = map(int, input().split())
 a = [list(map(int, input().split())) for _ in range(n)]
 
 
-def move(x, y, visited):
-    if visited[x][y]:
-        return 0
+def move(x, y):
+    visited[x][y] = True
 
-    uni = [(x, y)]
-    uni_sum = a[x][y]
+    united = [(x, y)]
+    united_sum = a[x][y]
 
     dq = deque([(x, y)])
     while dq:
         x, y = dq.popleft()
-        if visited[x][y]:
-            continue
-        else:
-            visited[x][y] = True
         for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            nx = x + dx
+            ny = y + dy
             if (
-                0 <= x + dx < n
-                and 0 <= y + dy < n
-                and not visited[x + dx][y + dy]
-                and l <= abs(a[x][y] - a[x + dx][y + dy]) <= r
+                0 <= nx < n
+                and 0 <= ny < n
+                and not visited[nx][ny]
+                and l <= abs(a[x][y] - a[nx][ny]) <= r
             ):
-                uni_sum += a[x + dx][y + dy]
-                uni.append((x + dx, y + dy))
-                dq.append((x + dx, y + dy))
-    for i, j in uni:
-        a[i][j] = uni_sum // len(uni)
-    return len(uni) - 1
+                visited[nx][ny] = True
+                united_sum += a[nx][ny]
+                united.append((nx, ny))
+                dq.append((nx, ny))
+    for i, j in united:
+        a[i][j] = united_sum // len(united)
+
+    return len(united) - 1
 
 
 time = 0
@@ -389,10 +387,114 @@ while True:
     visited = [[False for _ in range(n)] for _ in range(n)]
     for x in range(n):
         for y in range(n):
-            is_moved += move(x, y, visited)
+            if not visited[x][y]:
+                is_moved += move(x, y)
     if is_moved == 0:
         break
     time += 1
 
 print(time)
+```
+
+
+## [블록 이동하기](https://programmers.co.kr/learn/courses/30/lessons/60063)
+지나간 곳의 좌표를 string으로 변환한 후 set에 저장한 후, 다시 지나가지 않도록 체크했다.
+(이 부분을 list로 했을 때보다 실행시간이 많이 줄어들었다.)
+```python
+from calendar import c
+from collections import deque
+from tabnanny import check
+
+def get_routes(a, b, board, N):
+    for dx, dy in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+        na = (a[0] + dx, a[1] + dy)
+        nb = (b[0] + dx, b[1] + dy)
+        if (
+            1 <= na[0] <= N and 1 <= na[1] <= N
+            and 1 <= nb[0] <= N and 1 <= nb[1] <= N
+            and board[na[0]][na[1]] == 0 and board[nb[0]][nb[1]] == 0
+        ):
+            yield (na, nb)
+    if a[0] == b[0]:  # 로봇이 가로로 있으면
+        if a[1] > b[1]:  # a가 b 왼쪽에 있도록
+            a, b = b, a
+
+        # 위에 공간이 있으면
+        if (
+            1 <= a[0] - 1 <= N
+            and board[a[0] - 1][a[1]] == 0 and board[b[0] - 1][b[1]] == 0
+        ):
+            na = a
+            nb = (a[0] - 1, a[1])
+            yield (na, nb)
+            na = (b[0] - 1, b[1])
+            nb = b
+            yield (na, nb)
+
+        # 아래에 공간이 있으면
+        if (
+            1 <= a[0] + 1 <= N
+            and board[a[0] + 1][a[1]] == 0 and board[b[0] + 1][b[1]] == 0
+        ):
+            na = a
+            nb = (a[0] + 1, a[1])
+            yield (na, nb)
+            na = (b[0] + 1, b[1])
+            nb = b
+            yield (na, nb)
+
+    else:  # 로봇이 세로로 있으면
+        if a[0] > b[0]:  # a가 b 위쪽에 있도록
+            a, b = b, a
+
+        # 왼쪽에 공간이 있으면
+        if (
+            1 <= a[1] - 1 <= N
+            and board[a[0]][a[1] - 1] == 0 and board[b[0]][b[1] - 1] == 0
+        ):
+            na = a
+            nb = (a[0], a[1] - 1)
+            yield (na, nb)
+            na = (b[0], b[1] - 1)
+            nb = b
+            yield (na, nb)
+
+        # 오른쪽에 공간이 있으면
+        if (
+            1 <= a[1] + 1 <= N
+            and board[a[0]][a[1] + 1] == 0 and board[b[0]][b[1] + 1] == 0
+        ):
+            na = a
+            nb = (a[0], a[1] + 1)
+            yield (na, nb)
+            na = (b[0], b[1] + 1)
+            nb = b
+            yield (na, nb)
+
+def solution(board):
+    N = len(board)
+    new_board = [[0 for _ in range(N + 1)]]
+    for row in board:
+        new_board.append([0] + row)
+
+    min_time = 1e9
+    checked = set()
+    a, b = (1, 1), (1, 2)
+    checked.add(str((a, b)))
+    checked.add(str((b, a)))
+
+    dq = deque([((1, 1), (1, 2), 0)])
+    while dq:
+        a, b, time = dq.popleft()
+        if time + 1 >= min_time:
+            continue
+        for na, nb in get_routes(a, b, new_board, N):
+            if str((na, nb)) not in checked:
+                checked.add(str((na, nb)))
+                checked.add(str((nb, na)))
+                if na == (N, N) or nb == (N, N):
+                    min_time = min(min_time, time + 1)
+                dq.append((na, nb, time + 1))
+
+    return min_time
 ```
