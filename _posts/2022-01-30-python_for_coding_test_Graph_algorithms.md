@@ -15,9 +15,9 @@ tag: [Algorithm]
 
     ```python
     def find_parent(parent, x):
-    if parent[x] != x:
-        parent[x] = find_parent(parent, parent[x])
-    return parent[x]
+        if parent[x] != x:
+            parent[x] = find_parent(parent, parent[x])
+        return parent[x]
 
 
     def union_parent(parent, a, b):
@@ -45,7 +45,7 @@ tag: [Algorithm]
         1. 간선 데이터를 비용에 따라 오름차순으로 정렬
         2. 모든 간선에 대해 간선이 사이클을 발생시키지 않는다면 최소 신장 트리에 포함시킴
 
-        정렬에 가장 시간이 오래 걸리기 때문에 E개의 간선이 있을 떄, 시간복잡도는 O(E log E)이다.
+        정렬에 가장 시간이 오래 걸리기 때문에 E개의 간선이 있을 때, 시간복잡도는 O(E log E)이다.
 
 - Topology Algorithm
 
@@ -80,3 +80,186 @@ tag: [Algorithm]
 
         return result
     ```
+
+
+## [행성 터널](https://www.acmicpc.net/problem/2887)
+처음에는 모든 행성 사이의 거리를 체크하였고, n(n-1)/2 개를 비교했어야 했다. 이 경우 메모리 초과가 되었다.
+```python
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+planets = [list(map(int, input().split())) for _ in range(n)]
+
+
+def find_parent(x):
+    global parents
+    if parents[x] != x:
+        parents[x] = find_parent(parents[x])
+    return parents[x]
+
+
+def union_parent(a, b):
+    global parents
+    a = find_parent(a)
+    b = find_parent(b)
+    if a < b:
+        parents[b] = a
+    else:
+        parents[a] = b
+
+
+def get_dist(a, b):
+    ax, ay, az = a
+    bx, by, bz = b
+    return min(abs(ax - bx), abs(ay - by), abs(az - bz))
+
+
+parents = [i for i in range(n)]
+distances = []
+for i in range(n):
+    for j in range(i + 1, n):
+        distances.append((i, j, get_dist(planets[i], planets[j])))
+
+distances.sort(key=lambda x: x[2])
+
+total_cost = 0
+for dist in distances:
+    a, b, cost = dist
+    if find_parent(a) != find_parent(b):
+        total_cost += cost
+        union_parent(a, b)
+
+print(total_cost)
+```
+
+행성 사이의 거리는 x, y, z의 차이 중 가장 작은 것이다. 따라서 x, y, z 각각을 기준을 정렬을 했을 때 서로 이웃간의 거리들 이상으로 통로가 연결될 일을 없다.
+
+그래서 총 3*(n-1)개만 비교하면 된다.
+
+```python
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+planets = [list(map(int, input().split())) + [idx] for idx in range(n)]
+
+
+def find_parent(x):
+    global parents
+    if parents[x] != x:
+        parents[x] = find_parent(parents[x])
+    return parents[x]
+
+
+def union_parent(a, b):
+    global parents
+    a = find_parent(a)
+    b = find_parent(b)
+    if a < b:
+        parents[b] = a
+    else:
+        parents[a] = b
+
+
+def get_dist(a, b):
+    ax, ay, az, aidx = a
+    bx, by, bz, aidx = b
+    return min(abs(ax - bx), abs(ay - by), abs(az - bz))
+
+
+parents = [i for i in range(n)]
+distances = []
+
+# x, y, z 별로 정렬해서, 각각 가장 작은 distance n - 1개를 distances에 추가
+# 총 3(n - 1)개의 distance만 확인하면 됨
+for idx in range(3):
+    planets.sort(key=lambda x: x[idx])
+    for i in range(n - 1):
+        distances.append((planets[i][3], planets[i + 1][3], get_dist(planets[i], planets[i + 1])))
+
+distances.sort(key=lambda x: x[2])
+
+total_cost = 0
+for dist in distances:
+    a, b, cost = dist
+    if find_parent(a) != find_parent(b):
+        total_cost += cost
+        union_parent(a, b)
+
+print(total_cost)
+```
+
+
+## [최종 순위](https://www.acmicpc.net/problem/3665)
+```python
+import sys
+from collections import deque
+input = sys.stdin.readline
+
+
+def topology_sort():
+    global n
+    global indegrees
+    result = []
+    dq = deque()
+
+    for i in range(1, n + 1):
+        if indegrees[i] == 0:
+            dq.append(i)
+    if len(dq) == 0:
+        return result
+
+    while dq:
+        now = dq.popleft()
+        result.append(now)
+
+        for i in orders[now]:
+            indegrees[i] -= 1
+            if indegrees[i] == 0:
+                dq.append(i)
+        if len(dq) > 1:
+            return "?"
+    return result
+
+
+ntests = int(input())
+
+for _ in range(ntests):
+    n = int(input())
+    last_ranks = list(map(int, input().split()))
+    m = int(input())
+
+    changes = dict()
+    for _ in range(m):
+        a, b = map(int, input().split())
+        if a in changes.keys():
+            changes[a].append(b)
+        else:
+            changes[a] = [b]
+        if b in changes.keys():
+            changes[b].append(a)
+        else:
+            changes[b] = [a]
+
+    orders = [[] for _ in range(n + 1)]
+    for i in range(n - 1):
+        for j in range(i + 1, n):
+            if last_ranks[j] in changes.keys() and last_ranks[i] in changes[last_ranks[j]]:
+                orders[last_ranks[j]].append(last_ranks[i])
+            else:
+                orders[last_ranks[i]].append(last_ranks[j])
+
+    indegrees = [0 for _ in range(n + 1)]
+    for row in orders:
+        for j in row:
+            indegrees[j] += 1
+
+    ret = topology_sort()
+    if isinstance(ret, str):
+        print(ret)
+    elif len(ret) != n:
+        print("IMPOSSIBLE")
+    else:
+        print(" ".join(map(str, ret)))
+```
