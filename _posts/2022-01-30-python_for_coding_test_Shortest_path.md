@@ -51,3 +51,37 @@ tag: [Algorithm]
             for b in range(1, n + 1):
                 graph[a][b] = min(graph[a][b], graph[a][k] + graph[k][b])
     ```
+
+
+
+## [플로이드](https://www.acmicpc.net/problem/11404)
+```python
+import sys
+input = sys.stdin.readline
+
+n = int(input())
+m = int(input())
+buses = [list(map(int, input().split())) for _ in range(m)]
+
+graph = [[1e9 for _ in range(n)] for _ in range(n)]
+for bus in buses:
+    a, b, cost = bus
+    graph[a - 1][b - 1] = min(cost, graph[a - 1][b - 1])
+for i in range(n):
+    graph[i][i] = 0
+
+# Floyd-Warchall
+# a -> k -> b
+for k in range(n):
+    for a in range(n):
+        for b in range(n):
+            graph[a][b] = min(graph[a][b], graph[a][k] + graph[k][b])
+
+for a in range(n):
+    for b in range(n):
+        if graph[a][b] > 1e8:
+            graph[a][b] = 0
+
+for row in graph:
+    print(" ".join(map(str, row)))
+```
